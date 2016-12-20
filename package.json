@@ -1,9 +1,10 @@
 {
-  "name"         : "Canada immigration API",
+  "name"         : "gotocanada",
   "version"      : "0.0.1",
   "description"  : "Scrape le site de l'immigration Canadienne",
   "main"         : "server.js",
   "author"       : "François Belle",
+  "start"        : "node server.js",
   "dependencies" : {
     "express"    : "latest",
     "http"       : "latest",
