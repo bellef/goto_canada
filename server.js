@@ -4,36 +4,47 @@ var http        = require('http');
 var parser      = require('xml2json');
 
 
-// TODO: Créer des routes séparées pour chaque pays et chaque type de visa
 app.get('/', function(req, res){
-
+  // URL
   options = {
     host: 'www.cic.gc.ca',
     path: '/francais/travailler/eic/selection.xml' }
 
-  request = http.get(options, function(response) {
+  // Scrape data
+  http.get(options, function(response) {
     if (response.statusCode == 200) {
       var bodyChunks = [];
       response.on('data', function(chunk) {
         bodyChunks.push(chunk);
       }).on('end', function() {
+        // I Have my data !
         var body = Buffer.concat(bodyChunks).toString(); // Concat all chunks to have a whole xml file
         var json = JSON.parse(parser.toJson(body));
 
-        frances = json.temp.country.filter(function(item) {
-          return item.location == "France";
+        data_to_render = json.temp.country.filter(function(item) {
+          if (req.query.location) {
+            if (req.query.category)
+              return (item.category == req.query.category && item.location == req.query.location);
+            else
+              return (item.location == req.query.location);
+          }
+          else
+            return true;
         });
 
-        res.json(frances);
+        res.json(data_to_render);
+        // I Have my data !
       });
     }
-  });
-  request.on('error', function(error) {
+  }).on('error', function(error) {
     console.error(error);
   });
 })
 
-app.listen('8081')
+
+app.get('/')
+
+app.listen('8081');
 
 console.log('Magic happens on port 8081');
 
