@@ -1,9 +1,9 @@
 {
-  "name"         : "node-web-scrape",
+  "name"         : "Canada immigration API",
   "version"      : "0.0.1",
-  "description"  : "Scrape le web.",
+  "description"  : "Scrape le site de l'immigration Canadienne",
   "main"         : "server.js",
-  "author"       : "Scotch",
+  "author"       : "François Belle",
   "dependencies" : {
     "express"    : "latest",
     "http"       : "latest",

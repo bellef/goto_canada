@@ -2,7 +2,7 @@ var express     = require('express');
 var app         = express();
 var http        = require('http');
 var parser      = require('xml2json');
-
+var port        = process.env.PORT || 8080;
 
 app.get('/', function(req, res){
   // URL
@@ -32,8 +32,8 @@ app.get('/', function(req, res){
             return true;
         });
 
+        // I return my data filtered
         res.json(data_to_render);
-        // I Have my data !
       });
     }
   }).on('error', function(error) {
@@ -44,8 +44,6 @@ app.get('/', function(req, res){
 
 app.get('/')
 
-app.listen('8081');
-
-console.log('Magic happens on port 8081');
+app.listen(port);
 
 exports = module.exports = app;
