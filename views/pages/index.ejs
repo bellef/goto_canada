@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <% include ../partials/head %>
+</head>
+<body class="container">
+
+  <header>
+    <% include ../partials/header %>
+  </header>
+
+  <main>
+    <h2>Rondes d'invitation Canada</h2>
+    <!-- Loop over stats -->
+    <% stats.forEach(function(stat) { %>
+
+    <div class="col-md-12">
+      <% include ../partials/stats %>
+    </div>
+
+    <%})%>
+  </main>
+
+  <footer>
+    <% include ../partials/footer %>
+  </footer>
+
+</body>
+</html>

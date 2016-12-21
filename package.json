@@ -1,13 +1,14 @@
 {
-  "name"         : "gotocanada",
-  "version"      : "0.0.1",
-  "description"  : "Scrape le site de l'immigration Canadienne",
-  "main"         : "server.js",
-  "author"       : "François Belle",
-  "start"        : "node server.js",
-  "dependencies" : {
-    "express"    : "latest",
-    "http"       : "latest",
-    "xml2json"   : "latest"
+  "name": "gotocanada",
+  "version": "0.0.1",
+  "description": "Scrape le site de l'immigration Canadienne",
+  "main": "server.js",
+  "author": "François Belle",
+  "start": "node server.js",
+  "dependencies": {
+    "ejs": "^2.5.5",
+    "express": "latest",
+    "http": "latest",
+    "xml2json": "latest"
   }
 }

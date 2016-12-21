@@ -4,6 +4,9 @@ var http        = require('http');
 var parser      = require('xml2json');
 var port        = process.env.PORT || 8080;
 
+// set the view engine to ejs
+app.set('view engine', 'ejs');
+
 app.get('/', function(req, res){
   // URL
   options = {
@@ -21,7 +24,14 @@ app.get('/', function(req, res){
         var body = Buffer.concat(bodyChunks).toString(); // Concat all chunks to have a whole xml file
         var json = JSON.parse(parser.toJson(body));
 
-        data_to_render = json.temp.country.filter(function(item) {
+        // Get locations list
+        var locations = json.temp.country.map(function(item) {
+          return item.location;
+        });
+        locations = locations.filter(onlyUnique);
+
+        // Get stats with filters passed in url
+        var stats = json.temp.country.filter(function(item) {
           if (req.query.location) {
             if (req.query.category)
               return (item.category == req.query.category && item.location == req.query.location);
@@ -32,8 +42,17 @@ app.get('/', function(req, res){
             return true;
         });
 
+        // Get categories for selected locations
+        var categories = stats.map(function(item) {
+          return (item.category);
+        });
+
         // I return my data filtered
-        res.json(data_to_render);
+        res.render('pages/index', {
+          locations:  locations,
+          categories: categories,
+          stats:      stats
+        });
       });
     }
   }).on('error', function(error) {
@@ -42,8 +61,14 @@ app.get('/', function(req, res){
 })
 
 
+function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
+}
+
 app.get('/')
 
 app.listen(port);
+
+console.log("Magic happens on port " + port);
 
 exports = module.exports = app;
