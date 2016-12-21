@@ -12,12 +12,8 @@
   <main>
     <h2>Rondes d'invitation Canada</h2>
     <!-- Loop over stats -->
-    <% stats.forEach(function(stat) { %>
-
-    <div class="col-md-12">
+    <% stats.forEach(function(stat, i) { %>
       <% include ../partials/stats %>
-    </div>
-
     <%})%>
   </main>
 

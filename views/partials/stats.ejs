@@ -11,6 +11,57 @@
   spots: '4 782',
   chances: '1' } -->
 
-<div class="row">
-  <%= stat.quota %>
+<div class="charts col-md-4 col-sm-12">
+
+  <%
+    var catReadable = '';
+    if (stat.category == "coop")
+      catReadable = 'Stage coop'
+    else if (stat.category == "wh")
+      catReadable = 'PVT'
+    else if (stat.category == "yp")
+      catReadable = 'JP'
+  %>
+
+  <h2><%= catReadable %></h2>
+  <canvas id="chart<%=i%>" width="400" height="400"></canvas>
 </div>
+
+<!-- Script to create the charts -->
+<script>
+  var ctx = document.getElementById("chart<%=i%>");
+
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Candidats', 'Quota', 'Places disponibles', 'Invitations envoyées'],
+      datasets: [{
+        label: 'Données',
+        data: [
+          <%= parseInt(stat.candidates.replace(/\s/g, '')) %>,
+          <%= parseInt(stat.quota.replace(/\s/g, '')) %>,
+          <%= parseInt(stat.spots.replace(/\s/g, '')) %>,
+          <%= parseInt(stat.invitations.replace(/\s/g, '')) %>
+        ],
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(105, 219, 107, 0.2)',
+          'rgba(255, 206, 86, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255,99,132,1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(105, 219, 107, 1)',
+          'rgba(255, 206, 86, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      legend: {
+        display: false
+      }
+    }
+  });
+</script>
