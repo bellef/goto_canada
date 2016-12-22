@@ -1,74 +1,57 @@
-var express     = require('express');
-var app         = express();
-var http        = require('http');
-var parser      = require('xml2json');
-var port        = process.env.PORT || 8080;
+import express  from 'express'
+import http     from 'http'
+import parser   from 'xml2json'
+import { filterParams, onlyUnique } from './utils'
+var app         = express()
+var port        = process.env.PORT || 8080
 
 // set the view engine to ejs
-app.set('view engine', 'ejs');
+app.set('view engine', 'ejs')
 
 app.get('/', function(req, res){
   // URL
-  options = {
+  var options = {
     host: 'www.cic.gc.ca',
     path: '/francais/travailler/eic/selection.xml' }
 
   // Scrape data
-  http.get(options, function(response) {
+  http.get(options, (response) => {
     if (response.statusCode == 200) {
-      var bodyChunks = [];
-      response.on('data', function(chunk) {
-        bodyChunks.push(chunk);
-      }).on('end', function() {
+      var bodyChunks = []
+      response.on('data', (chunk) => {
+        bodyChunks.push(chunk)
+      }).on('end', () => {
         // I Have my data !
-        var body = Buffer.concat(bodyChunks).toString(); // Concat all chunks to have a whole xml file
-        var json = JSON.parse(parser.toJson(body));
+        var body = Buffer.concat(bodyChunks).toString() // Concat all chunks to have a whole xml file
+        var {temp: { country:countries }} = JSON.parse(parser.toJson(body)) // Extract countries
 
-        // Get locations list
-        var locations = json.temp.country.map(function(item) {
-          return item.location;
-        });
-        locations = locations.filter(onlyUnique);
+        // Get locations list for front select
+        var locations = countries
+                          .map(item => item.location)
+                          .filter(onlyUnique)
 
         // Get stats with filters passed in url
-        var stats = json.temp.country.filter(function(item) {
-          if (req.query.location) {
-            if (req.query.category)
-              return (item.category == req.query.category && item.location == req.query.location);
-            else
-              return (item.location == req.query.location);
-          }
-          else
-            return true;
-        });
+        const { query: { category, location } } = req
+
+        var stats = countries.filter((item) => filterParams(item, category, location))
 
         // Get categories for selected locations
-        var categories = stats.map(function(item) {
-          return (item.category);
-        });
+        var categories = stats.map(item => item.category)
 
         // I return my data filtered
-        res.render('pages/index', {
-          locations:  locations,
-          categories: categories,
-          stats:      stats
-        });
-      });
+        res.json({
+          locations,
+          categories,
+          stats
+        })
+      })
     }
-  }).on('error', function(error) {
-    console.error(error);
-  });
+  }).on('error', error => console.error(error))
 })
 
 
-function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
-}
-
 app.get('/')
 
-app.listen(port);
+app.listen(port)
 
-console.log("Magic happens on port " + port);
-
-exports = module.exports = app;
+console.log("Magic happens on port " + port)
