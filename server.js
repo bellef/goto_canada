@@ -1,9 +1,11 @@
 import express  from 'express'
 import http     from 'http'
 import parser   from 'xml2json'
-import { filterParams, onlyUnique } from './utils'
+import { filterParams, onlyUnique, sanitizeItem } from './utils'
 var app         = express()
 var port        = process.env.PORT || 8080
+
+// Virer les views
 
 // set the view engine to ejs
 app.set('view engine', 'ejs')
@@ -33,7 +35,9 @@ app.get('/', function(req, res){
         const { query: { category, location } } = req
 
         // Get stats with filters passed in url
-        var stats = countries.filter((item) => filterParams(item, category, location))
+        var stats = countries
+                      .filter(item => filterParams(item, category, location))
+                      .map(item => sanitizeItem(item))
 
         // Get categories for filtered locations
         var categories = stats.map(item => item.category)
