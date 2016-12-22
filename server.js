@@ -17,12 +17,11 @@ app.get('/', function(req, res){
   // Scrape data
   http.get(options, (response) => {
     if (response.statusCode == 200) {
-      var bodyChunks = []
+      var body = ''
       response.on('data', (chunk) => {
-        bodyChunks.push(chunk)
+        body += chunk
       }).on('end', () => {
-        // I Have my data !
-        var body = Buffer.concat(bodyChunks).toString() // Concat all chunks to have a whole xml file
+        // Data retrieved
         var {temp: { country:countries }} = JSON.parse(parser.toJson(body)) // Extract countries
 
         // Get locations list for front select
@@ -30,15 +29,16 @@ app.get('/', function(req, res){
                           .map(item => item.location)
                           .filter(onlyUnique)
 
-        // Get stats with filters passed in url
+        // Extract category and location from request
         const { query: { category, location } } = req
 
+        // Get stats with filters passed in url
         var stats = countries.filter((item) => filterParams(item, category, location))
 
-        // Get categories for selected locations
+        // Get categories for filtered locations
         var categories = stats.map(item => item.category)
 
-        // I return my data filtered
+        // Return filtered data
         res.json({
           locations,
           categories,
