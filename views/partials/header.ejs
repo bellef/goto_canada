@@ -1,17 +1,14 @@
-<nav class="navbar navbar-default" role="navigation">
-  <div class="container-fluid">
+<select name="select" id="country-select">
+  <% locations.forEach(function(location) { %>
+    <option value="/?location=<%= location %>"> <%= location %> </option>
+  <%})%>
+</select>
 
-    <div class="navbar-header">
-      <a class="navbar-brand" href="#">
-        <span class="glyphicon glyphicon glyphicon-tree-deciduous"></span>
-        EJS Is Fun
-      </a>
-    </div>
-
-    <ul class="nav navbar-nav">
-    <% locations.forEach(function(location) { %>
-      <li><a href="/?location=<%= location %>"><%= location %></a></li>
-    <%})%>
-    </ul>
-  </div>
-</nav>
+<script>
+  document.getElementById("country-select").onchange = function() {
+    window.location.href = window.location.origin + this.value;
+  };
+  // Set value of select to currently selected item
+  var elem = document.getElementById("country-select");
+  elem.value = '/' + window.location.search.split("&")[0]
+</script>

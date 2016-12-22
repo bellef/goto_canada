@@ -5,12 +5,10 @@ import { filterParams, onlyUnique, sanitizeItem } from './utils'
 var app         = express()
 var port        = process.env.PORT || 8080
 
-// Virer les views
-
 // set the view engine to ejs
 app.set('view engine', 'ejs')
 
-app.get('/api', function(req, res){
+app.get('/', function(req, res){
   // URL
   var options = {
     host: 'www.cic.gc.ca',
@@ -43,7 +41,7 @@ app.get('/api', function(req, res){
         var categories = stats.map(item => item.category)
 
         // Return filtered data
-        res.json({
+        res.render('pages/index', {
           locations,
           categories,
           stats
