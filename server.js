@@ -10,7 +10,7 @@ var port        = process.env.PORT || 8080
 // set the view engine to ejs
 app.set('view engine', 'ejs')
 
-app.get('/', function(req, res){
+app.get('/api', function(req, res){
   // URL
   var options = {
     host: 'www.cic.gc.ca',
@@ -52,9 +52,6 @@ app.get('/', function(req, res){
     }
   }).on('error', error => console.error(error))
 })
-
-
-app.get('/')
 
 app.listen(port)
 
