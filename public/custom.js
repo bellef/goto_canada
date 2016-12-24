@@ -5,5 +5,5 @@ document.addEventListener("DOMContentLoaded", function(event) {
   };
   // Set value of select to currently selected item
   var elem = document.getElementById("country-select");
-  elem.value = '/' + window.location.search.split("&")[0];
+  elem.value =  '/stats' + window.location.search.split("&")[0];
 });

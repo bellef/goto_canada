@@ -10,6 +10,38 @@ app.set('view engine', 'ejs')
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res){
+
+  // -------------------------TO REFACTO (Not DRY)
+  // URL
+  var options = {
+    host: 'www.cic.gc.ca',
+    path: '/francais/travailler/eic/selection.xml' }
+
+  // Scrape data
+  http.get(options, (response) => {
+    if (response.statusCode == 200) {
+      var body = ''
+      response.on('data', (chunk) => {
+        body += chunk
+      }).on('end', () => {
+        // Data retrieved
+        var {temp: { country:countries }} = JSON.parse(parser.toJson(body)) // Extract countries
+
+        // Get locations list for front select
+        var locations = countries
+                          .map(item => item.location)
+                          .filter(onlyUnique)
+
+        res.render('pages/index', {
+          locations,
+        })
+      })
+    }
+  })
+  // -------------------------TO REFACTO (Not DRY)
+})
+
+app.get('/stats', function(req, res){
   // URL
   var options = {
     host: 'www.cic.gc.ca',
@@ -42,7 +74,7 @@ app.get('/', function(req, res){
         var categories = stats.map(item => item.category)
 
         // Return filtered data
-        res.render('pages/index', {
+        res.render('pages/stats', {
           locations,
           categories,
           stats

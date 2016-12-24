@@ -10,7 +10,11 @@
   </header>
 
   <main>
-    <h2>Choisissez votre pays</h2>
+    <h2>Rondes d'invitation Canada</h2>
+    <!-- Loop over stats -->
+    <% stats.forEach(function(stat, i) { %>
+      <% include ../partials/stats %>
+    <%})%>
   </main>
 
   <footer>

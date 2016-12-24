@@ -1,5 +1,5 @@
 <select name="select" id="country-select">
   <% locations.forEach(function(location) { %>
-    <option value="/?location=<%= location %>"> <%= location %> </option>
+    <option value="/stats?location=<%= location %>"> <%= location %> </option>
   <%})%>
 </select>
