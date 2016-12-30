@@ -10,44 +10,19 @@ app.set('view engine', 'ejs')
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res){
-
-  // -------------------------TO REFACTO (Not DRY)
-  // URL
-  var options = {
-    host: 'www.cic.gc.ca',
-    path: '/francais/travailler/eic/selection.xml' }
-
-  // Scrape data
-  http.get(options, (response) => {
-    if (response.statusCode == 200) {
-      var body = ''
-      response.on('data', (chunk) => {
-        body += chunk
-      }).on('end', () => {
-        // Data retrieved
-        var {temp: { country:countries }} = JSON.parse(parser.toJson(body)) // Extract countries
-
-        // Get locations list for front select
-        var locations = countries
-                          .map(item => item.location)
-                          .filter(onlyUnique)
-
-        res.render('pages/index', {
-          locations,
-        })
-      })
-    }
-  })
-  // -------------------------TO REFACTO (Not DRY)
+  scrapeRender(req, res, 'index')
 })
 
 app.get('/stats', function(req, res){
+  scrapeRender(req, res, 'stats')
+})
+
+const scrapeRender = (req, res, page) => {
   // URL
   var options = {
     host: 'www.cic.gc.ca',
     path: '/francais/travailler/eic/selection.xml' }
 
-  // Scrape data
   http.get(options, (response) => {
     if (response.statusCode == 200) {
       var body = ''
@@ -61,6 +36,7 @@ app.get('/stats', function(req, res){
         var locations = countries
                           .map(item => item.location)
                           .filter(onlyUnique)
+                          .sort()
 
         // Extract category and location from request
         const { query: { category, location } } = req
@@ -74,7 +50,7 @@ app.get('/stats', function(req, res){
         var categories = stats.map(item => item.category)
 
         // Return filtered data
-        res.render('pages/stats', {
+        res.render('pages/' + page, {
           locations,
           categories,
           stats
@@ -82,7 +58,7 @@ app.get('/stats', function(req, res){
       })
     }
   }).on('error', error => console.error(error))
-})
+}
 
 app.listen(port)
 
